@@ -1,0 +1,129 @@
+public class CalloutsToAbhyramOrg {
+ @future(callout = true)
+    public static void getDetails(){
+        Http ht= new Http();
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint ('callout:Yaswanth_Aby_Org/services/apexrest/AccountsInfo/');
+         req.setMethod('GET');
+      //  req.setHeader('content-type','application/json;charset=UTF-8');
+       // req.setHeader('Accept','application/json');
+       
+        
+        HttpResponse res = ht.send(req);
+        
+        system.debug('response code:'+res.getStatuscode());
+        system.debug('response body:'+res.getbody());
+        if(res.getStatuscode()==200){
+            map<string,object> acclist = (map<string,object>) json.deserializeUntyped(res.getbody());
+            system.debug('result  :'+acclist);
+            list<object> acLst = (list<object>) acclist.get('acclist');
+             list<object> conLst = (list<object>) acclist.get('conlist');
+             list<object> casLst = (list<object>) acclist.get('caselist');
+            system.debug('account list '+acLst);
+             system.debug('account list '+conLst);
+             system.debug('account list '+casLst);
+            
+            
+             // /*
+            integer accountsCount = acLst.size();
+            integer conCount = conLst.size();
+            integer caseCount = casLst.size();
+            
+            for(integer i=0; i<accountsCount; i++){
+                system.debug(acLst[i]);
+            }   //*/
+            
+            for(integer i=0; i<conCount; i++){
+                system.debug(conLst[i]);
+            } 
+            for(integer i=0; i<caseCount; i++){
+                system.debug(casLst[i]);
+            } 
+        }
+    }
+    
+    @future(callout = true)
+public static void createAccountInTargetOrg(String AccData) {
+    System.debug('Data received: ' + AccData);
+        try {
+            HttpRequest req = new HttpRequest();
+            req.setEndpoint('callout:Yaswanth_Aby_Org/services/apexrest/AccountsInfo/');
+            req.setMethod('POST');
+            
+            // Set headers
+            req.setHeader('Content-Type', 'application/json;charset=UTF-8');
+            req.setHeader('Accept', 'application/json');
+            
+            // Set body directly from AccData
+            req.setBody(AccData);
+            System.debug('Request Body: ' + req.getBody());
+            
+            // Send request
+            Http http = new Http();
+            HttpResponse res = http.send(req);
+            
+            // Handle response
+            if (res.getStatusCode() == 200 || res.getStatusCode() == 201) {
+                System.debug('Success: Account created successfully in target org.');
+                System.debug('Response body: ' + res.getBody());
+            } else {
+                System.debug('Error: Failed to create account in target org.');
+                System.debug('Response code: ' + res.getStatusCode());
+                System.debug('Response body: ' + res.getBody());
+            }
+        } catch (Exception e) {
+            System.debug('Exception: ' + e.getMessage());
+        }
+    
+    /*
+    system.debug('data recieved '+AccData);
+    try {
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Yaswanth_Aby_Org/services/apexrest/AccountsInfo/');
+        req.setMethod('POST');
+        
+        // Set headers
+        req.setHeader('Content-Type', 'application/json;charset=UTF-8');
+        req.setHeader('Accept', 'application/json');
+        
+        // Set body with correctly formatted JSON
+        req.setBody(AccData);  // AccData is already serialized
+        
+        // Send request
+        Http http = new Http();
+        HttpResponse res = http.send(req);
+        
+        // Handle response
+        if (res.getStatusCode() == 200 || res.getStatusCode() == 201) {
+            System.debug('Success: Account created successfully in target org.');
+            System.debug('Response body: ' + res.getBody());
+        } else {
+            System.debug('Error: Failed to create account in target org.');
+            System.debug('Response code: ' + res.getStatusCode());
+            System.debug('Response body: ' + res.getBody());
+        }
+    } catch (Exception e) {
+        System.debug('Exception: ' + e.getMessage());
+    }
+    
+    */
+}
+ /*
+   
+    @future(callout = true)
+    public static void createAccountInTargetOrg(string AccData){
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint ('callout:Yaswanth_Aby_Org/services/apexrest/AccountsInfo/');
+        req.setHeader('content-type','application/json;charset=UTF-8');
+        req.setHeader('Accept','application/json');
+      req.setBody('{"accountData": ' + AccData + '}');
+        req.setMethod('POST');
+        Http http = new Http();
+        HttpResponse response = http.send(req);
+        
+        system.debug('response code:'+response.getStatuscode());
+        system.debug('response body:'+response.getbody());
+    }
+    
+*/
+}
